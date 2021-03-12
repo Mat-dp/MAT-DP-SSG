@@ -14,7 +14,7 @@ or manually execute the commands in `make-env`.
 
 ## Usage
 
-`process_template.py` must be given the path to the emissions data file (`outputs/dfE_tech_bycountry.csv` from the **MAT-DP** project), and will insert appropriately formatted data into a template file (such as `test/basic.html.jinja`) and save the results to an output file.
+`process_template.py` must be given the path to the "outputs" directory (from the **MAT-DP** project), and will insert appropriately formatted data into a template file (such as `test/basic.html.jinja`) and save the results to an output file.
 
 The script is invoked as:
 ```

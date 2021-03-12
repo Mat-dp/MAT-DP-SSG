@@ -6,23 +6,43 @@ from pathlib import Path
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 
-def load_df(file: Path):
+def load_dfs(dir: Path):
+
+    filenames = {
+        'emissions_year': 'dfE_tech_bycountry.csv',
+        'emissions_mat': 'E_matbytech_bycountry.csv'
+    }
     countries = ['UK', 'Uganda', 'KE', 'RW', 'ZA']
 
-    df = pd.read_csv(file, index_col=0)
-    df = df.drop(columns=['Hydrogen'])
-    df = df.groupby(['Country', 'Scenario', 'Year']).first().loc[countries]
+    # emissions by year
+    df_ey = pd.read_csv(dir / filenames['emissions_year'], index_col=0).fillna(0)
+    df_ey = df_ey.drop(columns=['Hydrogen'])
+    df_ey = df_ey.groupby(['Country', 'Scenario', 'Year']).first().loc[countries]
+
+    # emissions by mat
+    df_et = pd.read_csv(dir / filenames['emissions_mat'], index_col=0).fillna(0)
+    df_et = df_et.rename(columns={'tech': 'Tech'})
+    df_et = df_et.groupby(['Country', 'Scenario', 'Year', 'Tech']).first().loc[countries]
+    df_et = df_et.groupby(['Country', 'Scenario', 'Tech']).sum()
+    df_em = df_et.groupby(['Country', 'Scenario']).sum()
+
+    res = {
+        'emissions_year': df_ey,
+        'emissions_tech': df_et,
+        'emissions_mat': df_em,
+    }
 
     # standardise naming
-    df = df.rename(index=
-    {
+    rename_dict = {
         'UK': 'United Kingdom',
         'KE': 'Kenya',
         'RW': 'Rwanda',
-        'ZA': 'Zambia'
-    })
+        'ZA': 'Zambia',
+    }
+    for name, df in res.items():
+        df.rename(index=rename_dict, inplace=True)
 
-    return df
+    return res
 
 def df_to_dict(df):
     if isinstance(df.index, pd.MultiIndex):
@@ -33,25 +53,33 @@ def df_to_dict(df):
         return df.to_dict('dict')
 
 
-def main(data_file: Path = typer.Argument(..., help='A .csv file containing emissions data.'),
+def main(data_dir: Path = typer.Argument(..., help='An "outputs" directory containing .csv data files.'),
          input_template: Path = typer.Argument(..., help='Jinja2 template file to process.'),
-         output_file: Path = typer.Argument(..., help='Location for processed template (will be overwritten).')):
+         output_file: Path = typer.Argument(..., help='Location for processed template (will be overwritten).'),
+         verbose: bool = False):
 
-    data_file = data_file.resolve()
+    data_dir = data_dir.resolve()
     input_template = input_template.resolve()
     output_file = output_file.resolve()
 
-    typer.echo(f'Rendering     {input_template}\nusing data in {data_file}\nand saving to {output_file}')
+    if verbose:
+        typer.echo(f'Rendering     {input_template}\nusing data in {data_dir}\nand saving to {output_file}')
 
-    df = load_df(data_file)
     env = Environment(
         loader=FileSystemLoader(input_template.parent),
         autoescape=select_autoescape(['html', 'xml'])
     )
     template = env.get_template(input_template.name)
 
+    dfs = load_dfs(data_dir)
+
+    if verbose:
+        for name, df in dfs.items():
+            typer.echo(f'DataFrame {name}:')
+            typer.echo(df)
+
     # don't use json.dumps, instead rely on Jinja doing the right thing
-    stream = template.stream(plot_data=df_to_dict(df))
+    stream = template.stream(**{name: df_to_dict(df) for name, df in dfs.items()})
     with output_file.open('w') as file:
         stream.dump(file)
 
