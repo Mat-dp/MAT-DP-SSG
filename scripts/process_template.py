@@ -18,6 +18,8 @@ def load_dfs(dir: Path):
     df_ey = pd.read_csv(dir / filenames['emissions_year'], index_col=0).fillna(0)
     df_ey = df_ey.drop(columns=['Hydrogen'])
     df_ey = df_ey.groupby(['Country', 'Scenario', 'Year']).first().loc[countries]
+    df_ey = df_ey.stack().unstack(level='Year', fill_value=0)
+    df_ey.index.set_names('Tech', -1, True)
 
     # emissions by mat
     df_et = pd.read_csv(dir / filenames['emissions_mat'], index_col=0).fillna(0)
@@ -53,7 +55,7 @@ def df_to_dict(df, drop_full_zeros = True):
             df = df.loc[:, (df != 0).any(axis=0)]
         # Shape of lowest level can be tuned, see:
         # https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.to_dict.html
-        return df.to_dict('dict')
+        return df.to_dict('index')
 
 
 def main(data_dir: Path = typer.Argument(..., help='An "outputs" directory containing .csv data files.'),
