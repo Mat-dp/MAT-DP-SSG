@@ -44,10 +44,13 @@ def load_dfs(dir: Path):
 
     return res
 
-def df_to_dict(df):
+def df_to_dict(df, drop_full_zeros = True):
     if isinstance(df.index, pd.MultiIndex):
         return {name: df_to_dict(g.droplevel(0)) for name, g in df.groupby(level=0)}
     else:
+        if drop_full_zeros:
+            df = df.loc[(df!=0).any(1)]
+            df = df.loc[:, (df != 0).any(axis=0)]
         # Shape of lowest level can be tuned, see:
         # https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.to_dict.html
         return df.to_dict('dict')
@@ -56,6 +59,7 @@ def df_to_dict(df):
 def main(data_dir: Path = typer.Argument(..., help='An "outputs" directory containing .csv data files.'),
          input_template: Path = typer.Argument(..., help='Jinja2 template file to process.'),
          output_file: Path = typer.Argument(..., help='Location for processed template (will be overwritten).'),
+         preserve_zeros: bool = False,
          verbose: bool = False):
 
     data_dir = data_dir.resolve()
@@ -79,7 +83,7 @@ def main(data_dir: Path = typer.Argument(..., help='An "outputs" directory conta
             typer.echo(df)
 
     # don't use json.dumps, instead rely on Jinja doing the right thing
-    stream = template.stream(**{name: df_to_dict(df) for name, df in dfs.items()})
+    stream = template.stream(**{name: df_to_dict(df, not preserve_zeros) for name, df in dfs.items()})
     with output_file.open('w') as file:
         stream.dump(file)
 
