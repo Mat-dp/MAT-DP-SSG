@@ -12,7 +12,7 @@
 <nav class="navbar">
     <div class="navbar-brand">
         <a class="navbar-item">
-            <img src="logo.png" height="28" width="70"/>
+            <img src="Refficiency_logos-09.png" height="28" width="70"/>
         </a>
     </div>
 
@@ -78,18 +78,23 @@
         <div class="column" style ="background-color: #DEE2D9">
 
             <br>
-
-            <div class="box">
-                <p>Welcome to MAT-dp, an
-                interactive tool for exploring
-                climate compatible futures
-                for energy and transport
-                systems in developing
-                countries and their impact
-                on material demand and
-                industrial capacity
-                </p>
+            <div class ="box">
+                MAT-DP (Material Demand Projections) is a model developed by the
+                University of Cambridge. MAT-DP compares the material implications of
+                changing energy and transport systems over time.
             </div>
+
+<!--            <div class="box">-->
+<!--                <p>Welcome to MAT-dp, an-->
+<!--                interactive tool for exploring-->
+<!--                climate compatible futures-->
+<!--                for energy and transport-->
+<!--                systems in developing-->
+<!--                countries and their impact-->
+<!--                on material demand and-->
+<!--                industrial capacity-->
+<!--                </p>-->
+<!--            </div>-->
 
             <div class="field">
                 <div class="level m-0">
@@ -122,6 +127,23 @@
                     </div>
                 </div>
             </div>
+
+            <div class ="container has-text-centered">
+                <a id = "conditons">
+                    <u>Conditions of use</u>
+                </a>
+            </div>
+            <br>
+            <div class ="container has-text-centered">
+
+                <img src="Refficiency-04.png" height="128" width="128"/>
+
+
+                <img src="cambridge_logo.jpg" height="128" width="128"/>
+
+            </div>
+
+
         </div>
 
 
@@ -161,6 +183,47 @@
             Select the scenario, which corresponds to a certain energy generation strategy.
         </div>
     </div>
+</div>
+
+<div class = "modal" id ="conmodal">
+    <div class="modal-background" id="conbg"></div>
+    <div class = "modal-content has-background-white">
+        <div class = "box">
+                <p class = "content">
+Citation<br><br>
+First version for Uganda by Maaike Hakker and Dr Jonathan Cullen
+Expanded version by Karla Cervantes Barron and Dr Jonathan Cullen
+                    <br><br>
+Please cite the authors above when using this model and include the
+license details as follows:<br><br>
+CC BY-NC-ND License<br>
+Creative Commons Licence<br>
+This work is licensed under a Creative Commons Attribution-
+NonCommercial-NoDerivatives 4.0 International License<br><br>
+
+You are free to:<br><br>
+
+Share - copy and redistribute the material in any medium or format
+The licensor cannot revoke these freedoms as long as you follow the
+license terms.<br>
+Under the following terms:<br><br>
+
+Attribution - You must give appropriate credit, provide a link to the
+license, and indicate if changes were made. You may do so in any
+reasonable manner, but not in any way that suggests the licensor
+endorses you or your use.<br><br>
+
+Non-Commercial - You may not use the material for commercial purposes.<br><br>
+
+No Derivatives - If you remix, transform, or build upon the material,
+you may not distribute the modified material.<br><br>
+
+No additional restrictions - You may not apply legal terms or
+technological measures that legally restrict others from doing anything
+the license permits.<br><br>
+                </p>
+        </div>
+
 </div>
 
 <script>
@@ -253,24 +316,38 @@
                     return {
                         label: name,
                         backgroundColor: colorMap["Tech"][name],
-                        data: Object.values(data).map(x => +x)
+                        data: Object.values(data).map(x => +x/1e12)
                     }
                 })
             },
             options: {
                 title:  {
                     display: true,
-                    text: 'GHG EMISSIONS FROM MATERIAL PRODUCTION'
+                    text: 'GHG EMISSIONS FROM MATERIAL PRODUCTION',
+                    fontSize:24
                 },
                 legend: {
                     position: 'right'
                 },
                 scales: {
                     yAxes: [{
+                        scaleLabel: {
+                            display:true,
+                            labelString:"Mt.CO2e/yr",
+                            fontSize: 18
+                        },
                         stacked: true,
                     }],
                     xAxes: [{
+                        gridLines:{
+                            display:false
+                        }
                     }]
+                },
+                elements:{
+                    point:{
+                        radius: 0
+                    }
                 }
             }
         });
@@ -289,7 +366,7 @@
                     return {
                         label: name,
                         backgroundColor: colorMap["Mat"][name],
-                        data: Object.values(data)
+                        data: Object.values(data).map((x) =>x/1e12),
                     }
                 })
             },
@@ -297,19 +374,29 @@
             options: {
                 title:  {
                     display: true,
-                    text: 'EMISSIONS BY TECHNOLOGY (2020-2050)'
+                    text: 'EMISSIONS BY TECHNOLOGY (2020-2050)',
+                    fontSize:24
                 },
                 legend: {
                     position: 'right'
                 },
                 scales: {
                     xAxes: [{
+                        scaleLabel: {
+                            display:true,
+                            labelString:"Mt.CO2e",
+                            fontSize: 18
+                        },
                         stacked: true,
                     }],
                     yAxes: [{
-                        stacked: true
+                        stacked: true,
+                        gridLines:{
+                            display: false
+                        }
                     }]
                 }
+
             }
         })
 
@@ -327,16 +414,31 @@
                 datasets: [{
                     label: '',
                     backgroundColor: Object.keys(emissions_mat[c][s]).map(x => colorMap["Mat"][x]),
-                    data: Object.values(emissions_mat[c][s])
+                    data: Object.values(emissions_mat[c][s]).map((x) =>x/1e12)
                 }]
             },
             options:{
                 title:  {
                     display: true,
-                    text: 'EMISSIONS BY MATERIAL (2020-2050)'
+                    text: 'EMISSIONS BY MATERIAL (2020-2050)',
+                    fontSize:24
                 },
                 legend: {
                     display:false
+                },
+                scales: {
+                    xAxes: [{
+                        scaleLabel: {
+                            display:true,
+                            labelString:"Mt.CO2e",
+                            fontSize: 18
+                        }
+                    }],
+                    yAxes: [{
+                        gridLines:{
+                            display: false
+                        }
+                    }]
                 }
             }
         })
@@ -365,6 +467,17 @@
     })
     sbg.addEventListener('click',()=>{
         smodal.classList.remove('is-active')
+    })
+
+    var con = document.getElementById('conditons')
+    var conmodal = document.getElementById('conmodal');
+    var conbg = document.getElementById('conbg');
+
+    con.addEventListener('click',()=>{
+        conmodal.classList.add('is-active')
+    })
+    conbg.addEventListener('click',()=>{
+        conmodal.classList.remove('is-active')
     })
 
 
