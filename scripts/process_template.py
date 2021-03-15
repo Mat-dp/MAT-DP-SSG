@@ -9,7 +9,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 def load_dfs(dir: Path):
 
     filenames = {
-        'emissions_year': 'dfE_tech_bycountry.csv',
+        'emissions_year': 'E_matbytech_bycountry.csv',
         'emissions_mat': 'E_matbytech_bycountry.csv'
     }
     rename_dict = {
@@ -23,10 +23,10 @@ def load_dfs(dir: Path):
     countries_alt = [rename_dict.get(n, n) for n in countries if n != 'UK']
 
     # emissions by year
-    df_ey = pd.read_csv(dir / filenames['emissions_year'], index_col=0).fillna(0).drop(columns=['Hydrogen'])
-    df_ey = df_ey.groupby(['Country', 'Scenario', 'Year']).first().loc[countries]
+    df_ey = pd.read_csv(dir / filenames['emissions_year'], index_col=0).fillna(0)
+    df_ey = df_ey.groupby(['Country', 'Scenario', 'Year']).sum().loc[countries]
     df_ey = df_ey.stack().unstack(level='Year', fill_value=0)
-    df_ey.index.set_names('Tech', -1, True)
+    df_ey.index.set_names('Mat', -1, True)
 
     # emissions by mat and tech
     df_et = pd.read_csv(dir / filenames['emissions_mat'], index_col=0).fillna(0).rename(columns={'tech': 'Tech'})
