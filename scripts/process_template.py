@@ -12,18 +12,24 @@ def load_dfs(dir: Path):
         'emissions_year': 'dfE_tech_bycountry.csv',
         'emissions_mat': 'E_matbytech_bycountry.csv'
     }
-    countries = ['UK', 'Uganda', 'KE', 'RW', 'ZA']
+    rename_dict = {
+        'KE': 'Kenya',
+        'RW': 'Rwanda',
+        'UG': 'Uganda',
+        'UK': 'United Kingdom',
+        'ZA': 'Zambia',
+    }
+    countries = list(rename_dict.keys())
+    countries_alt = [rename_dict.get(n, n) for n in countries if n != 'UK']
 
     # emissions by year
-    df_ey = pd.read_csv(dir / filenames['emissions_year'], index_col=0).fillna(0)
-    df_ey = df_ey.drop(columns=['Hydrogen'])
+    df_ey = pd.read_csv(dir / filenames['emissions_year'], index_col=0).fillna(0).drop(columns=['Hydrogen'])
     df_ey = df_ey.groupby(['Country', 'Scenario', 'Year']).first().loc[countries]
     df_ey = df_ey.stack().unstack(level='Year', fill_value=0)
     df_ey.index.set_names('Tech', -1, True)
 
-    # emissions by mat
-    df_et = pd.read_csv(dir / filenames['emissions_mat'], index_col=0).fillna(0)
-    df_et = df_et.rename(columns={'tech': 'Tech'})
+    # emissions by mat and tech
+    df_et = pd.read_csv(dir / filenames['emissions_mat'], index_col=0).fillna(0).rename(columns={'tech': 'Tech'})
     df_et = df_et.groupby(['Country', 'Scenario', 'Year', 'Tech']).first().loc[countries]
     df_em = df_et.groupby(['Country', 'Scenario']).sum()
     df_et = df_et.groupby(['Country', 'Scenario', 'Tech']).sum()
@@ -36,13 +42,6 @@ def load_dfs(dir: Path):
         'emissions_mat': df_em,
     }
 
-    # standardise naming
-    rename_dict = {
-        'UK': 'United Kingdom',
-        'KE': 'Kenya',
-        'RW': 'Rwanda',
-        'ZA': 'Zambia',
-    }
     for name, df in res.items():
         df.rename(index=rename_dict, inplace=True)
 
