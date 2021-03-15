@@ -367,6 +367,11 @@ the license permits.<br><br>
                         label: name,
                         backgroundColor: colorMap["Mat"][name],
                         data: Object.values(data).map((x) =>x/1e12),
+                        borderColor: '#000',
+                        borderWidth: 1,
+                        hoverBorderWidth: 3,
+                        hoverBorderColor: '#000',
+                        hoverBackgroundColor:'#BDF9E5'
                     }
                 })
             },
@@ -414,7 +419,12 @@ the license permits.<br><br>
                 datasets: [{
                     label: '',
                     backgroundColor: Object.keys(emissions_mat[c][s]).map(x => colorMap["Mat"][x]),
-                    data: Object.values(emissions_mat[c][s]).map((x) =>x/1e12)
+                    data: Object.values(emissions_mat[c][s]).map((x) =>x/1e12),
+                    borderColor: '#000',
+                    borderWidth: 1,
+                    hoverBorderWidth: 3,
+                    hoverBorderColor: '#000',
+                    hoverBackgroundColor:'#BDF9E5'
                 }]
             },
             options:{
