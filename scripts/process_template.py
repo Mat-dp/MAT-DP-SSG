@@ -25,8 +25,10 @@ def load_dfs(dir: Path):
     df_et = pd.read_csv(dir / filenames['emissions_mat'], index_col=0).fillna(0)
     df_et = df_et.rename(columns={'tech': 'Tech'})
     df_et = df_et.groupby(['Country', 'Scenario', 'Year', 'Tech']).first().loc[countries]
-    df_et = df_et.groupby(['Country', 'Scenario', 'Tech']).sum()
     df_em = df_et.groupby(['Country', 'Scenario']).sum()
+    df_et = df_et.groupby(['Country', 'Scenario', 'Tech']).sum()
+    df_et = df_et.stack().unstack(level='Tech', fill_value=0)
+    df_et.index.set_names('Mat', -1, True)
 
     res = {
         'emissions_year': df_ey,
