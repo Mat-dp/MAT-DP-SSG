@@ -17,7 +17,7 @@ def load_dfs(dir: Path):
         'RW': 'Rwanda',
         'UG': 'Uganda',
         'UK': 'United Kingdom',
-        'ZA': 'Zambia',
+        'ZM': 'Zambia',
     }
     countries = list(rename_dict.keys())
     countries_alt = [rename_dict.get(n, n) for n in countries if n != 'UK']
