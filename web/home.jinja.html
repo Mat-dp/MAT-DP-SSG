@@ -6,7 +6,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
-    <title>mat-dp</title>
+    <title>MAT-dp Live Demo</title>
 </head>
 <body>
 <nav class="navbar">
@@ -14,37 +14,44 @@
         <a class="navbar-item">
             <img src="Refficiency_logos-09.png" height="28" width="70"/>
         </a>
-    </div>
-
-    <div class="navbar-menu is-active">
+    <!--
+    <a role="button" class="navbar-burger" data-target="navMenu" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+    -->
+    <!--<div class="navbar-menu" id="navMenu">-->
         <div class="navbar-start">
             <div class="navbar-item">
-                <button class="button is-black is-inverted is-large pl-3 pr-3" style ="margin-left: 70px;margin-right: 70px;color: #FFBA67">
+                <button class="button is-black is-inverted is-large pl-3 pr-3" style ="color: #FFBA67">
                     HOME
                 </button>
             </div>
             <div class="navbar-item">
-                <button class="button is-black is-inverted is-large pl-3 pr-3 " style ="margin-left: 70px;margin-right: 70px;color: #FFBA67">
+                <button class="button is-black is-inverted is-large pl-3 pr-3 " style ="color: #FFBA67">
                     ENERGY
                 </button>
             </div>
             <div class="navbar-item">
-                <button class="button is-black is-inverted is-large pl-3 pr-3" style ="margin-left: 70px;margin-right: 70px;color: #FFBA67">
+                <button class="button is-black is-inverted is-large pl-3 pr-3" style ="color: #FFBA67">
                     MATERIAL
                 </button>
             </div>
             <div class="navbar-item">
-                <button class="button is-black is-inverted is-large pl-3 pr-3" style ="margin-left: 70px;margin-right: 70px;color: #FFBA67">
+                <button class="button is-large pl-3 pr-3" style ="color: #FFBA67">
                     EMISSIONS
                 </button>
             </div>
             <div class="navbar-item">
-                <button class="button is-black is-inverted is-large pl-3 pr-3" style ="margin-left: 70px;margin-right: 70px;color: #FFBA67">
+                <button class="button is-black is-inverted is-large pl-3 pr-3" style ="color: #FFBA67">
                     EMPLOYMENT
                 </button>
             </div>
         </div>
+    </div>
 
+      <div class="navbar-menu">
         <div class="navbar-end">
             <div class="navbar-item">
 
@@ -64,6 +71,7 @@
                 </a>
             </div>
         </div>
+      </div>
 
 
     </div>
@@ -71,16 +79,16 @@
 
 </nav>
 <hr class="rounded" style ="background-color: #96D4CC;height: 10px;margin-top: 0">
-<div class="container">
+<div class="container ml-0" style="max-width:100%">
 
     <div class="columns">
 
-        <div class="column" style ="background-color: #DEE2D9">
+        <div class="column mx-3" style ="background-color: #DEE2D9">
 
             <br>
             <div class ="box">
-                MAT-DP (Material Demand Projections) is a model developed by the
-                University of Cambridge. MAT-DP compares the material implications of
+                MAT-dp(Material Demand Projections) is a model developed by the
+                University of Cambridge. MAT-dp compares the material implications of
                 changing energy and transport systems over time.
             </div>
 
@@ -139,7 +147,7 @@
                 <img src="Refficiency-04.png" height="128" width="128"/>
 
 
-                <img src="cambridge_logo.jpg" height="128" width="128"/>
+                <img src="cambridge_logo.png" height="128" width="128"/>
 
             </div>
 
@@ -494,6 +502,34 @@ the license permits.<br><br>
     refreshCountry();
     refreshChart();
 
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  // Get all "navbar-burger" elements
+  const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+
+  // Check if there are any navbar burgers
+  if ($navbarBurgers.length > 0) {
+
+    // Add a click event on each of them
+    $navbarBurgers.forEach( el => {
+      el.addEventListener('click', () => {
+
+        // Get the target from the "data-target" attribute
+        const target = el.dataset.target;
+        const $target = document.getElementById(target);
+
+        // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+        el.classList.toggle('is-active');
+        $target.classList.toggle('is-active');
+
+      });
+    });
+  }
+
+});
 </script>
 
 
