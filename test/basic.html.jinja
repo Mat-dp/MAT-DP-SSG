@@ -3,9 +3,15 @@
 <head>
     <title>My Webpage</title>
     <script>
-        var emissions_year = {{ emissions_year }};
-        var emissions_tech = {{ emissions_tech }};
-        var emissions_mat = {{ emissions_mat }};
+        var emissions_year = {{ emissions_year | safe }};
+        var emissions_tech = {{ emissions_tech | safe }};
+        var emissions_mat = {{ emissions_mat | safe }};
+
+        {# var jobs_year_full = {{ jobs_year_full | safe }}; #}
+        var jobs_year = {{ jobs_year | safe }};
+        var jobs_tech = {{ jobs_tech | safe }};
+        var jobs_mat = {{ jobs_mat | safe }};
+
     </script>
 </head>
 <body>
