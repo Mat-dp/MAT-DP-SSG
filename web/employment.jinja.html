@@ -40,12 +40,16 @@
             </div>
             <div class="navbar-item">
                 <button class="button is-large pl-3 pr-3" style ="color: #FFBA67">
-                    EMISSIONS
+                    <a href="emissions.html" style="color: #FFBA67">
+                        EMISSIONS
+                    </a>
                 </button>
             </div>
             <div class="navbar-item">
                 <button class="button is-black is-inverted is-large pl-3 pr-3" style ="color: #FFBA67">
-                    EMPLOYMENT
+                    <a href="employment.html" style="color: #FFBA67">
+                        EMPLOYMENT
+                    </a>
                 </button>
             </div>
         </div>
@@ -232,15 +236,16 @@ the license permits.<br><br>
                 </p>
         </div>
 
+    </div>
 </div>
 
 <script>
 
-    var emissions_year = {{ emissions_year |safe }};
-    var emissions_tech = {{ emissions_tech |safe }};
-    var emissions_mat = {{ emissions_mat |safe }};
+    var jobs_year = {{ jobs_year | safe }};
+    var jobs_tech = {{ jobs_tech | safe }};
+    var jobs_ind = {{ jobs_ind | safe }};
 
-    var options = Object.keys(emissions_year);
+    var options = Object.keys(jobs_year);
 
     var selectBoxCountry = document.getElementById('country');
 
@@ -282,14 +287,20 @@ the license permits.<br><br>
             "Oil": "GoldenRod",
             "Solar PV": "Yellow",
             "Wind (Offshore)": "SkyBlue"
-
+        },
+        "Jobs": {
+            'Construction and Installation (jobs)': 'LightSkyBlue',
+            'Manufacturing (external jobs)': 'HotPink',
+            'Manufacturing (local jobs)': 'SpringGreen'
         }
+
+
 
     }
 
     function refreshCountry() {
         var c = document.getElementById('country').value;
-        var scenarios = Object.keys(emissions_year[c]);
+        var scenarios = Object.keys(jobs_year[c]);
 
         selectBoxScenario.options.length = 0;
 
@@ -304,7 +315,7 @@ the license permits.<br><br>
         var c = document.getElementById('country').value;
         var s = document.getElementById('scenario').value;
 
-        var mainChart = emissions_year[c][s];
+        var mainChart = jobs_year[c][s];
         var labels = Object.keys(Object.values(mainChart)[0]).map(x => +x);
 
         var testChart = document.getElementById('testChart').getContext('2d');
@@ -323,15 +334,15 @@ the license permits.<br><br>
                 datasets: Object.entries(mainChart).map(([name, data]) => {
                     return {
                         label: name,
-                        backgroundColor: colorMap["Mat"][name],
-                        data: Object.values(data).map(x => +x/1e12)
+                        backgroundColor: colorMap["Tech"][name],
+                        data: Object.values(data).map(x => +x/1e3)
                     }
                 })
             },
             options: {
                 title:  {
                     display: true,
-                    text: 'GHG EMISSIONS FROM MATERIAL PRODUCTION',
+                    text: 'EMPLOYMENT BY TECHNOLOGY',
                     fontSize:24
                 },
                 legend: {
@@ -341,7 +352,7 @@ the license permits.<br><br>
                     yAxes: [{
                         scaleLabel: {
                             display:true,
-                            labelString:"Mt.CO2e/yr",
+                            labelString:"JOBS(1000s)",
                             fontSize: 18
                         },
                         stacked: true,
@@ -361,7 +372,7 @@ the license permits.<br><br>
         });
 
         var bar1 = document.getElementById('barChart1').getContext('2d');
-        var bar1Labels = Object.keys(Object.values(emissions_tech[c][s])[0]);
+        var bar1Labels = Object.keys(Object.values(jobs_tech[c][s])[0]);
 
         console.log(bar1Labels);
 
@@ -370,11 +381,11 @@ the license permits.<br><br>
             type: 'horizontalBar',
             data: {
                 labels: bar1Labels,
-                datasets: Object.entries(emissions_tech[c][s]).map(([name, data]) => {
+                datasets: Object.entries(jobs_tech[c][s]).map(([name, data]) => {
                     return {
                         label: name,
-                        backgroundColor: colorMap["Mat"][name],
-                        data: Object.values(data).map((x) =>x/1e12),
+                        backgroundColor: colorMap["Jobs"][name],
+                        data: Object.values(data).map((x) =>x/1e3),
                         borderColor: '#000',
                         borderWidth: 1,
                         hoverBorderWidth: 3,
@@ -387,7 +398,7 @@ the license permits.<br><br>
             options: {
                 title:  {
                     display: true,
-                    text: 'EMISSIONS BY TECHNOLOGY (2020-2050)',
+                    text: 'JOBS BY TECHNOLOGY (2020-2050)',
                     fontSize:24
                 },
                 legend: {
@@ -397,7 +408,7 @@ the license permits.<br><br>
                     xAxes: [{
                         scaleLabel: {
                             display:true,
-                            labelString:"Mt.CO2e",
+                            labelString:"JOBS(1000s)",
                             fontSize: 18
                         },
                         stacked: true,
@@ -414,11 +425,11 @@ the license permits.<br><br>
         })
 
         var bar2 = document.getElementById('barChart2');
-        var bar2Labels = Object.keys(emissions_mat[c][s]);
+        var bar2Labels = Object.keys(jobs_ind[c][s]);
 
         console.log(bar2Labels);
 
-        console.log(Object.values(emissions_mat[c][s]));
+        console.log(Object.values(jobs_ind[c][s]));
 
         barChart2 = new Chart(bar2, {
             type: 'horizontalBar',
@@ -426,8 +437,8 @@ the license permits.<br><br>
                 labels: bar2Labels,
                 datasets: [{
                     label: '',
-                    backgroundColor: Object.keys(emissions_mat[c][s]).map(x => colorMap["Mat"][x]),
-                    data: Object.values(emissions_mat[c][s]).map((x) =>x/1e12),
+                    backgroundColor: Object.keys(jobs_ind[c][s]).map(x => colorMap["Jobs"][x]),
+                    data: Object.values(jobs_ind[c][s]).map((x) =>x/1e3),
                     borderColor: '#000',
                     borderWidth: 1,
                     hoverBorderWidth: 3,
@@ -438,7 +449,7 @@ the license permits.<br><br>
             options:{
                 title:  {
                     display: true,
-                    text: 'EMISSIONS BY MATERIAL (2020-2050)',
+                    text: 'JOBS BY TYPE (2020-2050)',
                     fontSize:24
                 },
                 legend: {
@@ -448,7 +459,7 @@ the license permits.<br><br>
                     xAxes: [{
                         scaleLabel: {
                             display:true,
-                            labelString:"Mt.CO2e",
+                            labelString:"JOBS(1000s)",
                             fontSize: 18
                         }
                     }],
@@ -502,34 +513,6 @@ the license permits.<br><br>
     refreshCountry();
     refreshChart();
 
-</script>
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-
-  // Get all "navbar-burger" elements
-  const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
-
-  // Check if there are any navbar burgers
-  if ($navbarBurgers.length > 0) {
-
-    // Add a click event on each of them
-    $navbarBurgers.forEach( el => {
-      el.addEventListener('click', () => {
-
-        // Get the target from the "data-target" attribute
-        const target = el.dataset.target;
-        const $target = document.getElementById(target);
-
-        // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
-        el.classList.toggle('is-active');
-        $target.classList.toggle('is-active');
-
-      });
-    });
-  }
-
-});
 </script>
 
 
