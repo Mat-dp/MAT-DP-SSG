@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <title>mat-dp</title>
+</head>
+<body>
+<nav class="navbar">
+    <div class="navbar-brand">
+        <a class="navbar-item">
+            <img src="Refficiency_logos-09.png" height="28" width="70"/>
+        </a>
+    </div>
+
+    <div class="navbar-menu is-active">
+        <div class="navbar-start">
+            <div class="navbar-item">
+                <button class="button is-black is-inverted is-large pl-3 pr-3" style ="margin-left: 70px;margin-right: 70px;color: #FFBA67">
+                    HOME
+                </button>
+            </div>
+            <div class="navbar-item">
+                <button class="button is-black is-inverted is-large pl-3 pr-3 " style ="margin-left: 70px;margin-right: 70px;color: #FFBA67">
+                    ENERGY
+                </button>
+            </div>
+            <div class="navbar-item">
+                <button class="button is-black is-inverted is-large pl-3 pr-3" style ="margin-left: 70px;margin-right: 70px;color: #FFBA67">
+                    MATERIAL
+                </button>
+            </div>
+            <div class="navbar-item">
+                <button class="button is-black is-inverted is-large pl-3 pr-3" style ="margin-left: 70px;margin-right: 70px;color: #FFBA67">
+                    <a href="emissions.html" style="color: #FFBA67">
+                    EMISSIONS
+                    </a>
+                </button>
+            </div>
+            <div class="navbar-item">
+                <button class="button is-black is-inverted is-large pl-3 pr-3" style ="margin-left: 70px;margin-right: 70px;color: #FFBA67">
+                    <a href="employment.html" style="color: #FFBA67">
+                    EMPLOYMENT
+                    </a>
+                </button>
+            </div>
+        </div>
+
+        <div class="navbar-end">
+            <div class="navbar-item">
+
+                    <a>
+                        <i class="fab fa-twitter" style ="color: #FFBA67"></i>
+                    </a>
+
+            </div>
+            <div class="navbar-item">
+                <a>
+                    <i class="fab fa-instagram" style ="color: #FFBA67"></i>
+                </a>
+            </div>
+            <div class="navbar-item">
+                <a>
+                    <i class="fab fa-github" style ="color: #FFBA67"></i>
+                </a>
+            </div>
+        </div>
+
+
+    </div>
+
+
+</nav>
+<hr class="rounded" style ="background-color: #96D4CC;height: 10px;margin-top: 0">
+<div class="container">
+
+    <div class="columns">
+
+        <div class="column" style ="background-color: #DEE2D9">
+
+            <br>
+            <div class ="box">
+                MAT-DP (Material Demand Projections) is a model developed by the
+                University of Cambridge. MAT-DP compares the material implications of
+                changing energy and transport systems over time.
+            </div>
+
+<!--            <div class="box">-->
+<!--                <p>Welcome to MAT-dp, an-->
+<!--                interactive tool for exploring-->
+<!--                climate compatible futures-->
+<!--                for energy and transport-->
+<!--                systems in developing-->
+<!--                countries and their impact-->
+<!--                on material demand and-->
+<!--                industrial capacity-->
+<!--                </p>-->
+<!--            </div>-->
+
+            <div class="field">
+                <div class="level m-0">
+                    <label class="label">Country</label>
+                    <a id ="cicon" style = "color: black">
+                        <i class="fas fa-info-circle"></i>
+                    </a>
+                </div>
+                <div class="control is-expanded">
+                    <div class="select is-fullwidth">
+                        <select id="country" onchange="refreshCountry();">
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="field">
+                <div class="level m-0">
+                    <label class="label">Scenario</label>
+                    <a  id ="sicon" style = "color: black">
+                        <i class="fas fa-info-circle"></i>
+                    </a>
+                </div>
+                <div class="control is-expanded">
+                    <div class="select is-fullwidth">
+                        <select id="scenario" onchange="refreshChart()">
+
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class ="container has-text-centered">
+                <a id = "conditons">
+                    <u>Conditions of use</u>
+                </a>
+            </div>
+            <br>
+            <div class ="container has-text-centered">
+
+                <img src="Refficiency-04.png" height="128" width="128"/>
+
+
+                <img src="cambridge_logo.jpg" height="128" width="128"/>
+
+            </div>
+
+
+        </div>
+
+
+        <div class="column is-four-fifths">
+            <div class=container>
+                <canvas id="testChart">
+                </canvas>
+            </div>
+
+
+            <div class=container>
+                <canvas id="barChart1">
+                </canvas>
+            </div>
+            <div class=container>
+                <canvas id="barChart2">
+                </canvas>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<div class ="modal" id="countrymodal">
+    <div class="modal-background" id="cbg"></div>
+    <div class = "modal-content has-background-white">
+        <div class = "box">
+            Select the country for which the climate data will be displayed.
+        </div>
+    </div>
+</div>
+
+<div class ="modal" id="scenariomodal">
+    <div class="modal-background" id="sbg"></div>
+    <div class = "modal-content has-background-white">
+        <div class = "box">
+            Select the scenario, which corresponds to a certain energy generation strategy.
+        </div>
+    </div>
+</div>
+
+<div class = "modal" id ="conmodal">
+    <div class="modal-background" id="conbg"></div>
+    <div class = "modal-content has-background-white">
+        <div class = "box">
+                <p class = "content">
+Citation<br><br>
+First version for Uganda by Maaike Hakker and Dr Jonathan Cullen
+Expanded version by Karla Cervantes Barron and Dr Jonathan Cullen
+                    <br><br>
+Please cite the authors above when using this model and include the
+license details as follows:<br><br>
+CC BY-NC-ND License<br>
+Creative Commons Licence<br>
+This work is licensed under a Creative Commons Attribution-
+NonCommercial-NoDerivatives 4.0 International License<br><br>
+
+You are free to:<br><br>
+
+Share - copy and redistribute the material in any medium or format
+The licensor cannot revoke these freedoms as long as you follow the
+license terms.<br>
+Under the following terms:<br><br>
+
+Attribution - You must give appropriate credit, provide a link to the
+license, and indicate if changes were made. You may do so in any
+reasonable manner, but not in any way that suggests the licensor
+endorses you or your use.<br><br>
+
+Non-Commercial - You may not use the material for commercial purposes.<br><br>
+
+No Derivatives - If you remix, transform, or build upon the material,
+you may not distribute the modified material.<br><br>
+
+No additional restrictions - You may not apply legal terms or
+technological measures that legally restrict others from doing anything
+the license permits.<br><br>
+                </p>
+        </div>
+
+</div>
+</div>
+
+<script>
+
+    var jobs_year = {{ jobs_year | safe }};
+    var jobs_tech = {{ jobs_tech | safe }};
+    var jobs_ind = {{ jobs_ind | safe }};
+
+    var options = Object.keys(jobs_year);
+
+    var selectBoxCountry = document.getElementById('country');
+
+    for (var i = 0, l = options.length; i < l; i++) {
+        var option = options[i];
+        selectBoxCountry.options.add(new Option(option, option));
+    }
+
+    var selectBoxScenario = document.getElementById('scenario');
+    var lineChart = null;
+    var barChart1 = null;
+    var barChart2 = null;
+    // https://www.w3schools.com/colors/colors_names.asp
+    var errorColor = "rgba(255,99,132,0.5)"
+    // Chart.defaults.global.defaultColor = errorColor;
+    var colorMap = {
+        "Mat": {
+            "Aluminium": "AliceBlue",
+            "Bentonite": "Beige",
+            "Cast Iron": "DarkBlue",
+            "Cement": "DarkGrey",
+            "Ceramics": "Cornsilk",
+            "Concrete": "DimGrey",
+            "Copper": "SandyBrown",
+            "Glass": "PowderBlue",
+            "Plastic": "LawnGreen",
+            "PVC": "GhostWhite",
+            "Sand": "NavajoWhite",
+            "Silicon": "MidnightBlue",
+            "Steel": "LightSteelBlue"
+        },
+        "Tech": {
+
+            "Biomass": "SaddleBrown",
+            "Coal": "Black",
+            "Gas": "PaleGreen",
+            "Geothermal": "FireBrick",
+            "Hydro": "DodgerBlue",
+            "Oil": "GoldenRod",
+            "Solar PV": "Yellow",
+            "Wind (Offshore)": "SkyBlue"
+        },
+        "Jobs": {
+            'Construction and Installation (jobs)': 'LightSkyBlue',
+            'Manufacturing (external jobs)': 'HotPink',
+            'Manufacturing (local jobs)': 'SpringGreen'
+        }
+
+
+
+    }
+
+    function refreshCountry() {
+        var c = document.getElementById('country').value;
+        var scenarios = Object.keys(jobs_year[c]);
+
+        selectBoxScenario.options.length = 0;
+
+        for (var i = 0, l = scenarios.length; i < l; i++) {
+            var scenario = scenarios[i];
+            selectBoxScenario.options.add(new Option(scenario, scenario));
+        }
+        refreshChart();
+    }
+
+    function refreshChart() {
+        var c = document.getElementById('country').value;
+        var s = document.getElementById('scenario').value;
+
+        var mainChart = jobs_year[c][s];
+        var labels = Object.keys(Object.values(mainChart)[0]).map(x => +x);
+
+        var testChart = document.getElementById('testChart').getContext('2d');
+
+        if (lineChart != null)
+            lineChart.destroy();
+        if (barChart1 != null)
+            barChart1.destroy();
+        if (barChart2 != null)
+            barChart2.destroy();
+
+        lineChart = new Chart(testChart, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: Object.entries(mainChart).map(([name, data]) => {
+                    return {
+                        label: name,
+                        backgroundColor: colorMap["Tech"][name],
+                        data: Object.values(data).map(x => +x/1e3)
+                    }
+                })
+            },
+            options: {
+                title:  {
+                    display: true,
+                    text: 'EMPLOYMENT BY TECHNOLOGY',
+                    fontSize:24
+                },
+                legend: {
+                    position: 'right'
+                },
+                scales: {
+                    yAxes: [{
+                        scaleLabel: {
+                            display:true,
+                            labelString:"JOBS(1000s)",
+                            fontSize: 18
+                        },
+                        stacked: true,
+                    }],
+                    xAxes: [{
+                        gridLines:{
+                            display:false
+                        }
+                    }]
+                },
+                elements:{
+                    point:{
+                        radius: 0
+                    }
+                }
+            }
+        });
+
+        var bar1 = document.getElementById('barChart1').getContext('2d');
+        var bar1Labels = Object.keys(Object.values(jobs_tech[c][s])[0]);
+
+        console.log(bar1Labels);
+
+
+        barChart1 = new Chart(bar1, {
+            type: 'horizontalBar',
+            data: {
+                labels: bar1Labels,
+                datasets: Object.entries(jobs_tech[c][s]).map(([name, data]) => {
+                    return {
+                        label: name,
+                        backgroundColor: colorMap["Jobs"][name],
+                        data: Object.values(data).map((x) =>x/1e3),
+                        borderColor: '#000',
+                        borderWidth: 1,
+                        hoverBorderWidth: 3,
+                        hoverBorderColor: '#000',
+                        hoverBackgroundColor:'#BDF9E5'
+                    }
+                })
+            },
+
+            options: {
+                title:  {
+                    display: true,
+                    text: 'JOBS BY TECHNOLOGY (2020-2050)',
+                    fontSize:24
+                },
+                legend: {
+                    position: 'right'
+                },
+                scales: {
+                    xAxes: [{
+                        scaleLabel: {
+                            display:true,
+                            labelString:"JOBS(1000s)",
+                            fontSize: 18
+                        },
+                        stacked: true,
+                    }],
+                    yAxes: [{
+                        stacked: true,
+                        gridLines:{
+                            display: false
+                        }
+                    }]
+                }
+
+            }
+        })
+
+        var bar2 = document.getElementById('barChart2');
+        var bar2Labels = Object.keys(jobs_ind[c][s]);
+
+        console.log(bar2Labels);
+
+        console.log(Object.values(jobs_ind[c][s]));
+
+        barChart2 = new Chart(bar2, {
+            type: 'horizontalBar',
+            data: {
+                labels: bar2Labels,
+                datasets: [{
+                    label: '',
+                    backgroundColor: Object.keys(jobs_ind[c][s]).map(x => colorMap["Jobs"][x]),
+                    data: Object.values(jobs_ind[c][s]).map((x) =>x/1e3),
+                    borderColor: '#000',
+                    borderWidth: 1,
+                    hoverBorderWidth: 3,
+                    hoverBorderColor: '#000',
+                    hoverBackgroundColor:'#BDF9E5'
+                }]
+            },
+            options:{
+                title:  {
+                    display: true,
+                    text: 'JOBS BY TYPE (2020-2050)',
+                    fontSize:24
+                },
+                legend: {
+                    display:false
+                },
+                scales: {
+                    xAxes: [{
+                        scaleLabel: {
+                            display:true,
+                            labelString:"JOBS(1000s)",
+                            fontSize: 18
+                        }
+                    }],
+                    yAxes: [{
+                        gridLines:{
+                            display: false
+                        }
+                    }]
+                }
+            }
+        })
+
+    }
+    //modals
+    var cicon = document.getElementById('cicon')
+    var cmodal = document.getElementById('countrymodal');
+    var cbg = document.getElementById('cbg');
+
+    cicon.addEventListener('click',()=>{
+        console.log('clicked');
+        cmodal.classList.add('is-active')
+    })
+    cbg.addEventListener('click',()=>{
+        cmodal.classList.remove('is-active')
+    })
+
+    var sicon = document.getElementById('sicon')
+    var smodal = document.getElementById('scenariomodal');
+    var sbg = document.getElementById('sbg');
+
+    sicon.addEventListener('click',()=>{
+        console.log('clicked');
+        smodal.classList.add('is-active')
+    })
+    sbg.addEventListener('click',()=>{
+        smodal.classList.remove('is-active')
+    })
+
+    var con = document.getElementById('conditons')
+    var conmodal = document.getElementById('conmodal');
+    var conbg = document.getElementById('conbg');
+
+    con.addEventListener('click',()=>{
+        conmodal.classList.add('is-active')
+    })
+    conbg.addEventListener('click',()=>{
+        conmodal.classList.remove('is-active')
+    })
+
+
+    refreshCountry();
+    refreshChart();
+
+</script>
+
+
+</body>
+</html>
