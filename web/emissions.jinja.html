@@ -308,7 +308,7 @@ the license permits.<br><br>
     function refreshChart() {
         var c = document.getElementById('country').value;
         var s = document.getElementById('scenario').value;
-        var co ="co" + "\u2082"+"e";
+        var co ="CO" + "\u2082"+"e";
 
         var mainChart = emissions_year[c][s];
         var labels = Object.keys(Object.values(mainChart)[0]).map(x => +x);
