@@ -18,6 +18,7 @@ def load_dfs(dir: Path):
         'RW': 'Rwanda',
         'UG': 'Uganda',
         'UK': 'United Kingdom',
+        'ZA': 'South Africa',
         'ZM': 'Zambia',
     }
     countries = list(rename_dict.keys())
@@ -44,8 +45,8 @@ def load_dfs(dir: Path):
             'scenario': 'Scenario',
             'country': 'Country'
         })
-    # drop first derivative rows
-    df_j = df_j[df_j['parameter'] == 'Power Generation Capacity (Aggregate)'].drop(columns=['parameter'])
+    # take appropriate rows
+    df_j = df_j[df_j['parameter'] != 'Power Generation Capacity (Aggregate)'].drop(columns=['parameter'])
     # drop strange "Capacity" Indicator value
     df_j = df_j[df_j['Indicator'] != 'Capacity']
 
