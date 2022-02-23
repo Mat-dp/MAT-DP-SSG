@@ -14,25 +14,39 @@ or manually execute the commands in `make-env`.
 
 ## Usage
 
-`process_template.py` must be given the path to the "outputs" directory (from the **MAT-DP** project), and will insert appropriately formatted data into a template file (such as `test/basic.html.jinja`) and save the results to an output file.
+`process_template.py` must be given the path to an output csv from the **MAT-DP** project, and will insert appropriately formatted data into a template file (such as `test/basic.html.jinja`) and save the results to an output file.
 
 The script is invoked as:
 ```
-Usage: process_template.py [OPTIONS] DATA_FILE INPUT_TEMPLATE OUTPUT_FILE
+
+Usage: process_template.py [OPTIONS] INPUT_CSV COUNTRY_CODE_PATH
+                           INPUT_TEMPLATE OUTPUT_FILE
 
 Arguments:
-  DATA_FILE       A .csv file containing emissions data.  [required]
-  INPUT_TEMPLATE  Jinja2 template file to process.  [required]
-  OUTPUT_FILE     Location for processed template (will be overwritten). [required]
+  INPUT_CSV          Input CSV data file  [required]
+  COUNTRY_CODE_PATH  CSV of country codes  [required]
+  INPUT_TEMPLATE     Jinja2 template file to process.  [required]
+  OUTPUT_FILE        Location for processed template (will be overwritten).
+                     [required]
 
 
 Options:
+  --preserve-zeros / --no-preserve-zeros
+                                  [default: False]
+  --verbose / --no-verbose        [default: False]
   --install-completion [bash|zsh|fish|powershell|pwsh]
-                  Install completion for the specified shell.
+                                  Install completion for the specified shell.
   --show-completion [bash|zsh|fish|powershell|pwsh]
-                  Show completion for the specified shell, to copy it or customize the installation.
+                                  Show completion for the specified shell, to
+                                  copy it or customize the installation.
 
-  --help          Show this message and exit.
+  --help                          Show this message and exit.
+```
+
+For example:
+
+```
+./scripts/process_template.py ../MAT-DP/newoutputs/Mat_matbytech_bycountry.csv ./country_codes.csv ./web/emissions.jinja.html testout2.html
 ```
 
 ## Authors

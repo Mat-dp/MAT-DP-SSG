@@ -6,68 +6,31 @@ from pathlib import Path
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 
-def load_dfs(dir: Path):
-
-    filenames = {
-        'emissions_year': 'E_matbytech_bycountry.csv',
-        'emissions_mat': 'E_matbytech_bycountry.csv',
-        'jobs': 'jobs_forplot.csv',
-    }
-    rename_dict = {
-        'KE': 'Kenya',
-        'RW': 'Rwanda',
-        'UG': 'Uganda',
-        'UK': 'United Kingdom',
-        'ZA': 'South Africa',
-        'ZM': 'Zambia',
-    }
-    countries = list(rename_dict.keys())
-    countries_alt = [n for n in countries if n != 'UK']
+def load_dfs(materials_path: Path, country_code_path: Path):
+    country_codes = pd.read_csv(country_code_path)
+    rename_dict = dict(zip(
+        list(map(lambda x: x.strip('" '), country_codes["Alpha-2 code"])),
+        list(country_codes["Country"])))
 
     # emissions by year
-    df_ey = pd.read_csv(dir / filenames['emissions_year'], index_col=0).fillna(0)
-    df_ey = df_ey.groupby(['Country', 'Scenario', 'Year']).sum().loc[countries]
+    df_ey = pd.read_csv(materials_path, index_col=0).fillna(0)
+    df_ey = df_ey.groupby(['Country', 'Scenario', 'Year']).sum()
     df_ey = df_ey.stack().unstack(level='Year', fill_value=0)
     df_ey.index.set_names('Mat', -1, True)
 
     # emissions by mat and tech
-    df_et = pd.read_csv(dir / filenames['emissions_mat'], index_col=0).fillna(0).rename(columns={'tech': 'Tech'})
-    df_et = df_et.groupby(['Country', 'Scenario', 'Year', 'Tech']).first().loc[countries]
+    df_et = pd.read_csv(materials_path, index_col=0).fillna(0).rename(columns={'tech': 'Tech'})
+    df_et = df_et.groupby(['Country', 'Scenario', 'Year', 'Tech']).first()
     df_em = df_et.groupby(['Country', 'Scenario']).sum()
     df_et = df_et.groupby(['Country', 'Scenario', 'Tech']).sum()
     df_et = df_et.stack().unstack(level='Tech', fill_value=0)
     df_et.index.set_names('Mat', -1, True)
-
-    # employment data
-    df_j = pd.read_csv(dir / filenames['jobs'], index_col=0)
-    df_j = df_j.drop(columns=['Country', 'ISO3']).rename(columns={
-            'tech': 'Tech',
-            'scenario': 'Scenario',
-            'country': 'Country'
-        })
-    # take appropriate rows
-    df_j = df_j[df_j['parameter'] != 'Power Generation Capacity (Aggregate)'].drop(columns=['parameter'])
-    # drop strange "Capacity" Indicator value
-    df_j = df_j[df_j['Indicator'] != 'Capacity']
-
-    df_j = df_j.groupby(['Country', 'Scenario', 'Year', 'Tech', 'Indicator']).first().loc[countries_alt]
-    # only one column left, transform into series with MultiIndex, drop last index level
-    df_j = df_j.stack().droplevel(-1)
-    df_jyf = df_j.unstack(level='Year', fill_value=0)
-    df_jy = df_j.groupby(['Country', 'Scenario', 'Year', 'Tech']).sum().unstack(level='Year', fill_value=0)
-
-    df_jt = df_j.groupby(['Country', 'Scenario', 'Indicator', 'Tech']).sum().unstack(level='Tech', fill_value=0)
-    df_ji = df_j.groupby(['Country', 'Scenario', 'Indicator']).sum().unstack(level='Indicator', fill_value=0)
 
 
     res = {
         'emissions_year': df_ey,
         'emissions_tech': df_et,
         'emissions_mat': df_em,
-        'jobs_year': df_jy,
-        'jobs_year_full': df_jyf,
-        'jobs_tech': df_jt,
-        'jobs_ind': df_ji,
     }
 
     for name, df in res.items():
@@ -87,18 +50,19 @@ def df_to_dict(df, drop_full_zeros = True):
         return df.to_dict('index')
 
 
-def main(data_dir: Path = typer.Argument(..., help='An "outputs" directory containing .csv data files.'),
+def main(input_csv: Path = typer.Argument(..., help='Input CSV data file'),
+         country_code_path: Path = typer.Argument(..., help='CSV of country codes'),
          input_template: Path = typer.Argument(..., help='Jinja2 template file to process.'),
          output_file: Path = typer.Argument(..., help='Location for processed template (will be overwritten).'),
          preserve_zeros: bool = False,
          verbose: bool = False):
 
-    data_dir = data_dir.resolve()
+    input_csv  = input_csv.resolve()
     input_template = input_template.resolve()
     output_file = output_file.resolve()
 
     if verbose:
-        typer.echo(f'Rendering     {input_template}\nusing data in {data_dir}\nand saving to {output_file}')
+        typer.echo(f'Rendering     {input_template}\nusing data in {input_csv}\nand saving to {output_file}')
 
     env = Environment(
         loader=FileSystemLoader(input_template.parent),
@@ -106,7 +70,7 @@ def main(data_dir: Path = typer.Argument(..., help='An "outputs" directory conta
     )
     template = env.get_template(input_template.name)
 
-    dfs = load_dfs(data_dir)
+    dfs = load_dfs(input_csv, country_code_path)
 
     if verbose:
         for name, df in dfs.items():
