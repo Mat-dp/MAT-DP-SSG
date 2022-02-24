@@ -50,8 +50,7 @@ def df_to_dict(df, drop_full_zeros = True):
         return df.to_dict('index')
 
 
-def main(input_csv: Path = typer.Argument(..., help='Input CSV data file'),
-         country_code_path: Path = typer.Argument(..., help='CSV of country codes'),
+def app(data_dir: Path = typer.Argument(..., help='An "outputs" directory containing .csv data files.'),
          input_template: Path = typer.Argument(..., help='Jinja2 template file to process.'),
          output_file: Path = typer.Argument(..., help='Location for processed template (will be overwritten).'),
          preserve_zeros: bool = False,
@@ -82,5 +81,8 @@ def main(input_csv: Path = typer.Argument(..., help='Input CSV data file'),
     with output_file.open('w') as file:
         stream.dump(file)
 
+def main():
+    typer.run(app)
+
 if __name__ == '__main__':
-    typer.run(main)
+    main()
