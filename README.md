@@ -14,7 +14,6 @@ This installs the command line program `mat-dp-ssg`
 
 ## Usage
 
-<<<<<<< HEAD
 `process_template.py` must be given the path to an output csv from the **MAT-DP** project, and will insert appropriately formatted data into a template file (such as `test/basic.html.jinja`) and save the results to an output file.
 
 The script is invoked as:
@@ -22,14 +21,11 @@ The script is invoked as:
 
 Usage: process_template.py [OPTIONS] INPUT_CSV COUNTRY_CODE_PATH
                            INPUT_TEMPLATE OUTPUT_FILE
-=======
 `mat-dp-ssg` must be given the path to the "outputs" directory (from the **MAT-DP** project), and will insert appropriately formatted data into a template file (such as `test/basic.html.jinja`) and save the results to an output file.
 
 The script is invoked as:
 ```
 Usage: mat-dp-ssg [OPTIONS] DATA_FILE INPUT_TEMPLATE OUTPUT_FILE
->>>>>>> 7fdffa4 (Switch to poetry build system)
-
 Arguments:
   INPUT_CSV          Input CSV data file  [required]
   COUNTRY_CODE_PATH  CSV of country codes  [required]

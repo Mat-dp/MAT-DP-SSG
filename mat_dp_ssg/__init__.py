@@ -50,11 +50,13 @@ def df_to_dict(df, drop_full_zeros = True):
         return df.to_dict('index')
 
 
-def app(data_dir: Path = typer.Argument(..., help='An "outputs" directory containing .csv data files.'),
-         input_template: Path = typer.Argument(..., help='Jinja2 template file to process.'),
-         output_file: Path = typer.Argument(..., help='Location for processed template (will be overwritten).'),
-         preserve_zeros: bool = False,
-         verbose: bool = False):
+def app(
+        input_csv: Path = typer.Argument(..., help='An "outputs" directory containing .csv data files.'),
+        country_code_path = typer.Argument(..., help=' CSV of country codes.'),
+        input_template: Path = typer.Argument(..., help='Jinja2 template file to process.'),
+        output_file: Path = typer.Argument(..., help='Location for processed template (will be overwritten).'),
+        preserve_zeros: bool = False,
+        verbose: bool = False):
 
     input_csv  = input_csv.resolve()
     input_template = input_template.resolve()
