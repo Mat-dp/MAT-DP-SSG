@@ -52,7 +52,8 @@ def df_to_dict(df, drop_full_zeros = True):
 
 def app(
         input_csv: Path = typer.Argument(..., help='An "outputs" directory containing .csv data files.'),
-        country_code_path = typer.Argument(..., help=' CSV of country codes.'),
+        country_code_path = typer.Argument(..., help='CSV of country codes.'),
+        colour_map_path = typer.Argument(..., help='Map of material names to colours for graphing.'),
         input_template: Path = typer.Argument(..., help='Jinja2 template file to process.'),
         output_file: Path = typer.Argument(..., help='Location for processed template (will be overwritten).'),
         preserve_zeros: bool = False,
@@ -78,8 +79,14 @@ def app(
             typer.echo(f'DataFrame {name}:')
             typer.echo(df)
 
+    with open(colour_map_path, "r") as f:
+        colour_map = f.read()
+
     # don't use json.dumps, instead rely on Jinja doing the right thing
-    stream = template.stream(**{name: df_to_dict(df, not preserve_zeros) for name, df in dfs.items()})
+    stream = template.stream(
+        **{name: df_to_dict(df, not preserve_zeros) for name, df in dfs.items()},
+        colour_map = colour_map
+    )
     with output_file.open('w') as file:
         stream.dump(file)
 

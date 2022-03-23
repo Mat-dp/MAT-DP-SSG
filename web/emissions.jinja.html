@@ -240,6 +240,9 @@ the license permits.<br><br>
 </div>
 
 <script>
+    function getRandomColor() {
+
+    }
 
     var emissions_year = {{ emissions_year |safe }};
     var emissions_tech = {{ emissions_tech |safe }};
@@ -261,35 +264,19 @@ the license permits.<br><br>
     // https://www.w3schools.com/colors/colors_names.asp
     var errorColor = "rgba(255,99,132,0.5)";
     // Chart.defaults.global.defaultColor = errorColor;
-    var colorMap = {
-        "Mat": {
-            "Aluminium": "AliceBlue",
-            "Bentonite": "Beige",
-            "Cast Iron": "DarkBlue",
-            "Cement": "DarkGrey",
-            "Ceramics": "Cornsilk",
-            "Concrete": "DimGrey",
-            "Copper": "SandyBrown",
-            "Glass": "PowderBlue",
-            "Plastic": "LawnGreen",
-            "PVC": "GhostWhite",
-            "Sand": "NavajoWhite",
-            "Silicon": "MidnightBlue",
-            "Steel": "LightSteelBlue"
-        },
-        "Tech": {
+    var colourMap = {{ colour_map | safe }};
 
-            "Biomass": "SaddleBrown",
-            "Coal": "Black",
-            "Gas": "PaleGreen",
-            "Geothermal": "FireBrick",
-            "Hydro": "DodgerBlue",
-            "Oil": "GoldenRod",
-            "Solar PV": "Yellow",
-            "Wind (Offshore)": "SkyBlue"
-
+    function get_colour(type, name) {
+      var colour = colourMap[type][name];
+      if (colour == undefined) {
+        var letters = '0123456789ABCDEF';
+        colour = '#';
+        for (var i = 0; i < 6; i++) {
+          colour += letters[Math.floor(Math.random() * 16)];
         }
-
+        return colour;
+      }
+      return colour;
     }
 
     function refreshCountry() {
@@ -329,7 +316,7 @@ the license permits.<br><br>
                 datasets: Object.entries(mainChart).map(([name, data]) => {
                     return {
                         label: name,
-                        backgroundColor: colorMap["Mat"][name],
+                        backgroundColor: get_colour("material", name),
                         data: Object.values(data).map(x => +x/1e12)
                     }
                 })
@@ -379,7 +366,7 @@ the license permits.<br><br>
                 datasets: Object.entries(emissions_tech[c][s]).map(([name, data]) => {
                     return {
                         label: name,
-                        backgroundColor: colorMap["Mat"][name],
+                        backgroundColor: get_colour("material", name),
                         data: Object.values(data).map((x) =>x/1e12),
                         borderColor: '#000',
                         borderWidth: 1,
@@ -432,7 +419,7 @@ the license permits.<br><br>
                 labels: bar2Labels,
                 datasets: [{
                     label: '',
-                    backgroundColor: Object.keys(emissions_mat[c][s]).map(x => colorMap["Mat"][x]),
+                    backgroundColor: Object.keys(emissions_mat[c][s]).map(x => get_colour("material", x)),
                     data: Object.values(emissions_mat[c][s]).map((x) =>x/1e12),
                     borderColor: '#000',
                     borderWidth: 1,

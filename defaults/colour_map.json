@@ -1,0 +1,37 @@
+{
+    "material": {
+        "Aluminium": "#7b95cc",
+        "Carbon Fiber": "#328c01",
+        "Cast Iron": "#bc2c9c",
+        "Cement": "#2659db",
+        "Concrete": "#0d0ec4",
+        "Copper": "#540d41",
+        "Epoxy": "#936ecb",
+        "Fibre Glass": "#19eb3d",
+        "Glass": "#148eea",
+        "Lubricant": "#b8f84a",
+        "Paint": "#df5c96",
+        "Plastic": "#7b0fc1",
+        "PVC": "#13a25e",
+        "Resin": "#ebd627",
+        "Sand": "#d22e14",
+        "Silicon": "#896172",
+        "Steel": "#d90faf",
+        "Zircon": "#c28257"
+    },
+    "technology": {
+        "Biomass": "#7b95cc",
+        "Gas": "#328c01",
+        "Hydro": "#bc2c9c",
+        "Nuclear": "#2659db",
+        "Oil": "#936ecb",
+        "Solar PV": "#148eea",
+        "Wind (Offshore)": "#b8f84a",
+        "Wind (Onshore)": "#df5c96"
+    },
+    "job": {
+        "Construction and Installation (jobs)": "#148eea",
+        "Manufacturing (external jobs)": "#328c01",
+        "Manufacturing (local jobs)": "#df5c96"
+    }
+}
